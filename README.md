@@ -1,53 +1,71 @@
 # Honeycomb
 
-Local file converter for macOS. Hold **⌥ Option**, long-press a file in Finder, hover a format on the honeycomb menu, release. Conversion runs in the background. No uploads, no APIs, no internet at runtime.
+Honeycomb is a native macOS file converter and editor. Select files on the Desktop or in Finder, hold the configured shortcut, and move the pointer to open a frosted-glass hex menu. This source snapshot is version **2.0.2**.
 
 ## Install
 
-1. Download `install-honeycomb.command`.
-2. Terminal: `chmod +x ~/Downloads/install-honeycomb.command`
-3. Right-click the file → **Open** → **Open** (it's unsigned, so macOS asks once).
-4. Let it finish. The first run installs Homebrew packages and LibreOffice, which is slow.
-5. Grant **Accessibility**, **Input Monitoring**, and **Automation → Finder** to `/Applications/Honeycomb.app`, then click **Restart** in the app.
+Requires macOS 13 or newer and Apple Command Line Tools. The installer can set up Homebrew and the conversion tools. Run it from the project folder:
 
-Requires macOS 13+. Safe to rerun to update. Rerunning re-signs the app, so macOS may ask for the permissions again.
+```sh
+/bin/bash ./install-honeycomb.command
+```
 
-## Use
+The installer compiles and ad-hoc signs `/Applications/Honeycomb.app` and updates that app in place. It installs FFmpeg, Pandoc, ImageMagick, Poppler, and LibreOffice as needed. The extended Filee CLI builds locally with .NET and becomes available after its conversion probe passes.
 
-- Hold ⌥ and long-press a file (default 250 ms, adjustable in the app).
-- Move onto a format hex and release to convert. Release over empty space or press Esc to cancel.
-- **More** shows extra formats. Trash… / Copy… variants convert and then trash the original or copy the result.
-- Output is saved next to the original and never overwrites (adds ` (1)`).
-- Multiple selected files convert as a batch.
+Enable **Accessibility** and **Input Monitoring** for Honeycomb in System Settings. Allow **Automation → Finder** when asked so Honeycomb can read the file selection. Allow notifications for completed conversions and failures. A new app signature can require enabling the permissions again. To repair a stale entry independently:
 
-## Formats
+```sh
+/bin/bash ./install-honeycomb.command --repair-accessibility
+/bin/bash ./install-honeycomb.command --repair-input-monitoring
+```
 
-Images (HEIC, JPG, PNG, WEBP, GIF, TIFF, PDF…), audio (MP3, M4A, WAV, FLAC, OPUS…), video (MP4, MOV, GIF, audio extract), documents (DOCX, PDF, TXT, MD, HTML…), spreadsheets, slides, and PDF to images or text. Plus compress and zip.
+## Use Honeycomb
 
-## How it works
+1. Select one or more files. With the default shortcut, hold **Option + Space** and move the pointer.
+2. Release over an output hex. Choose **More** to show the next ring, then click an option. **Back** returns to the previous ring and **Escape** cancels.
+3. For a crop-and-ZIP workflow, choose **Crop**, set the crop, and pick **ZIP outputs**. Pick **Continue editing** instead if you want to convert the crop before zipping it.
 
-- Swift, compiled with `swiftc` (no Xcode), packaged as an ad-hoc signed `Honeycomb.app`.
-- An active `CGEventTap` catches Option + long-press and swallows the click, so Finder doesn't start its Option-drag copy.
-- The menu is a transparent click-through overlay, with hover hit-tested from cursor coordinates.
-- The Finder selection is read through AppleScript.
-- Conversion engines: `sips`, ffmpeg, pandoc, ImageMagick, poppler, LibreOffice.
+Quick conversions cover common images, audio, video, documents, and PDFs. PowerPoint and Impress files (`.ppt`, `.pptx`, `.odp`) can export to PDF, and Excel and Calc files can export to PDF. XLSX and CSV can convert between each other. Filee adds more routes when its engines are available. The editor choices depend on the selected file type and whether you selected one file or a batch.
 
-## Files
+Conversions run in the background. Outputs go beside the source with a collision-safe filename. In **Open Honeycomb → Glass appearance**, choose a tint and strength or **Reset to neutral**. The same window has shortcut, login, and archive settings.
 
-| Path | What |
-|---|---|
-| `install-honeycomb.command` | The installer. Source of truth. |
-| `main.swift` | The app source, extracted from the installer for reading. |
-| `~/honeycomb/config.json` | Hold time, hex order per file type, favorites (reloads live). |
-| `~/honeycomb/log.txt` | App log. |
-| `~/honeycomb/install.log` | Installer log. |
+## Develop
 
-## Notes
+| Path | Contents |
+| --- | --- |
+| `main.swift` | AppKit event tap and hex overlay, SwiftUI settings, conversion routing, editors, and ZIP workflows |
+| `install-honeycomb.command` | Standalone installer with the embedded Swift and Filee CLI sources |
+| `vendor/filee-cli/` | Filee CLI and the source projects it builds against |
+| `scripts/sync-installer.py` | Embeds the editable sources and updates the Filee payload checksum |
+| `LICENSES/` | License and attribution for the native editor code |
 
-- Installs Homebrew if missing and uses its official install script. Read the installer before running anything downloaded.
-- Built for personal use. Not notarized.
-- Built with AI assistance.
+Edit `main.swift` or the Filee sources, then regenerate the installer with Python 3:
 
----
+```sh
+python3 scripts/sync-installer.py
+python3 scripts/sync-installer.py --check
+/bin/bash -n install-honeycomb.command
+```
 
-Built by Ezékiel Limboc, Industrial Engineering @ Batangas State University.
+To type-check the Swift without changing the installed app:
+
+```sh
+mkdir -p build/module-cache
+xcrun swiftc -swift-version 5 -typecheck \
+  -module-cache-path build/module-cache \
+  -target "$(uname -m)-apple-macosx13.0" main.swift
+```
+
+Configuration is stored in `~/honeycomb/config.json`. Runtime diagnostics are in `~/honeycomb/log.txt` and installer output is in `~/honeycomb/install.log`. If extended setup fails, check that log and retry with `/bin/bash ./install-honeycomb.command --extended-only`.
+
+## Start a Git repository
+
+```sh
+git init -b main
+git add .
+git commit -m "Import Honeycomb 2.0.2 source"
+```
+
+## Upstream code
+
+The native editors incorporate [Open Tangerine](https://github.com/sintaxerrorpvtltd/Open-Tangerine) code under GPL-3.0-only and retain the MIT attribution for [Satsuma](https://github.com/plyght/satsuma). The separately built [Filee](https://github.com/KnifeLemon/Filee) helper carries its MIT license and third-party notices in `vendor/filee-cli/`.
