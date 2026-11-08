@@ -100,18 +100,20 @@
           <p><a class="link" href="downloads/Honeycomb-source.zip" download>Download Mac source</a> · <a href="licenses.html">License notices</a></p>
         </article>
         <article class="platform windows">
-          <span class="status"><i></i> Preview</span>
+          <span class="status available"><i></i> Available</span>
           <h3>Windows</h3>
-          <p>Version 0.1.0 · Windows 11</p>
-          <a class="button" href="downloads/Honeycomb-Windows-Setup.exe" download>Download for Windows <span aria-hidden="true">↓</span></a>
+          <p>Version 0.2.0 · Windows 11</p>
+          <a class="button" href="downloads/Honeycomb-Windows-Setup.exe" download>Download Windows EXE <span aria-hidden="true">↓</span></a>
           <details>
-            <summary>Installation instructions</summary>
+            <summary>Installation and conversion tools</summary>
             <ol>
-              <li>Open <code>Honeycomb-Windows-Setup.exe</code> on Windows 11. Setup installs Honeycomb for your user account.</li>
-              <li>Pick files in File Explorer or on the Desktop, hold <strong>Ctrl + Alt + Space</strong>, move the pointer, and release over a hex.</li>
-              <li>Open Honeycomb from the system tray to change the shortcut or install extra conversion tools. Basic image tools and ZIP work without extra downloads.</li>
+              <li>If you already use Honeycomb, quit it from the system tray. Open <code>Honeycomb-Windows-Setup.exe</code> from your Downloads folder.</li>
+              <li>The installer is unsigned. If Microsoft Defender SmartScreen shows <strong>Windows protected your PC</strong>, check that you downloaded the EXE from this Honeycomb site. Click <strong>More info</strong>, then <strong>Run anyway</strong> if Windows offers it and you trust the download.</li>
+              <li>Select files in Explorer or on the Desktop. Hold <strong>Ctrl + Alt + Space</strong>, move the pointer, and release over a hex.</li>
+              <li>If a format needs an engine, pick <strong>Set up tools</strong> from the menu. Honeycomb asks before installing a tool. Open the menu again once the tool is detected.</li>
             </ol>
-            <p>This unsigned preview is intended for testing. Windows installation, Explorer integration, and full Mac feature parity still need verification.</p>
+            <p>Poppler handles PDF pages and text. FFmpeg handles audio and video, including M4A, M4V, and recognizable MPEG-4 files ending in <code>.m4</code>. LibreOffice handles PowerPoint, spreadsheets, and Office documents. ImageMagick and Pandoc add image and document formats.</p>
+            <p>For a mixed selection, choose <strong>By type</strong> to see each group’s options. <strong>Set up extended formats</strong> adds the separate Filee converter. Choose <strong>Extended…</strong> in the menu to see its available formats.</p>
           </details>
         </article>
       </div>
